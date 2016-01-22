@@ -1004,7 +1004,7 @@ public class ImageViewer extends JComponent {
         g2.fillRect(0, 0, getWidth(), getHeight());
         g2.translate(x, y);
         g2.setPaint(texture);
-        g2.fillRect(0, 0, size.width, size.height);
+        g2.fillRect(PADDING, PADDING, size.width - 2 * PADDING, size.height - 2 * PADDING);
 
         g2.scale(zoom, zoom);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
