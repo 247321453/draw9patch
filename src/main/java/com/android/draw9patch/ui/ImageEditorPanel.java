@@ -133,7 +133,7 @@ public class ImageEditorPanel extends JPanel {
 
     private void buildImageViewer() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(createHelpPanel(), BorderLayout.NORTH);
+     //   panel.add(createHelpPanel(), BorderLayout.NORTH);
 
         viewer = new ImageViewer(this, texture, image, new ImageViewer.StatusBar() {
             @Override
@@ -329,7 +329,7 @@ public class ImageEditorPanel extends JPanel {
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
-        xLabel = new JLabel("0px");
+        xLabel = new JLabel("0"+R.string.px);
         xLabel.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(xLabel, new GridBagConstraints(8, 0, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
@@ -341,7 +341,7 @@ public class ImageEditorPanel extends JPanel {
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
-        yLabel = new JLabel("0px");
+        yLabel = new JLabel("0"+R.string.px);
         yLabel.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(yLabel, new GridBagConstraints(8, 1, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
