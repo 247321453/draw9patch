@@ -64,7 +64,7 @@ public class StretchesViewer extends JPanel {
 
         image = viewer.getImage();
         patchInfo = viewer.getPatchInfo();
-
+        viewer.setZoom(0.5f);
         viewer.addPatchUpdateListener(new ImageViewer.PatchUpdateListener() {
             @Override
             public void patchesUpdated() {
@@ -79,7 +79,6 @@ public class StretchesViewer extends JPanel {
         horizontal = new StretchView();
         vertical = new StretchView();
         both = new StretchView();
-
         setScale(DEFAULT_SCALE);
 
         add(vertical, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER,

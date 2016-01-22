@@ -78,10 +78,10 @@ public class ImageViewer extends JComponent {
     public static final float DEFAULT_ZOOM = 8.0f;
 
     /** Minimum zoom level for the 9patch image. */
-    public static final float MIN_ZOOM = 0.25f;
+    public static final float MIN_ZOOM = 0.50f;
 
     /** Maximum zoom level for the 9patch image. */
-    public static final float MAX_ZOOM = 16.0f;
+    public static final float MAX_ZOOM = 10.0f;
 
     private final AWTEventListener mAwtKeyEventListener;
 
@@ -154,6 +154,10 @@ public class ImageViewer extends JComponent {
         ERASE,          // erasing whatever has been drawn
     }
 
+    private int getPadding() {
+        return Math.round(PADDING * zoom);
+    }
+
     /**
      * Current drawing mode. The mode is changed by using either the Shift or Ctrl keys while
      * drawing.
@@ -200,10 +204,11 @@ public class ImageViewer extends JComponent {
                 // below, because on linux, calling MouseEvent.getButton() for the drag
                 // event returns 0, which appears to be technically correct (no button
                 // changed state).
+
                 updateDrawMode(event);
 
-                int x = imageXCoordinate(event.getX());
-                int y = imageYCoordinate(event.getY());
+                int x = imageXCoordinate(event.getX() - PADDING);
+                int y = imageYCoordinate(event.getY() - PADDING);
 
                 startDrawingLine(x, y);
 
@@ -218,8 +223,8 @@ public class ImageViewer extends JComponent {
 
             @Override
             public void mouseReleased(MouseEvent event) {
-                int x = imageXCoordinate(event.getX());
-                int y = imageYCoordinate(event.getY());
+                int x = imageXCoordinate(event.getX() - PADDING);
+                int y = imageYCoordinate(event.getY() - PADDING);
 
                 endDrawingLine();
                 endEditingRegion(x, y);
@@ -230,8 +235,8 @@ public class ImageViewer extends JComponent {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent event) {
-                int x = imageXCoordinate(event.getX());
-                int y = imageYCoordinate(event.getY());
+                int x = imageXCoordinate(event.getX() - PADDING);
+                int y = imageYCoordinate(event.getY() - PADDING);
 
                 if (!checkLockedRegion(x, y)) {
                     // use the stored button, see note above
@@ -243,8 +248,8 @@ public class ImageViewer extends JComponent {
 
             @Override
             public void mouseMoved(MouseEvent event) {
-                int x = imageXCoordinate(event.getX());
-                int y = imageYCoordinate(event.getY());
+                int x = imageXCoordinate(event.getX() - PADDING);
+                int y = imageYCoordinate(event.getY() - PADDING);
 
                 checkLockedRegion(x, y);
 

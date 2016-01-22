@@ -16,9 +16,12 @@
 
 package com.android.draw9patch.ui;
 
-import javax.swing.filechooser.FileFilter;
+import com.android.draw9patch.R;
+
 import java.io.File;
 import java.util.Locale;
+
+import javax.swing.filechooser.FileFilter;
 
 class PngFileFilter extends FileFilter {
     @Override
@@ -28,6 +31,6 @@ class PngFileFilter extends FileFilter {
 
     @Override
     public String getDescription() {
-        return "PNG Image (*.png)";
+        return R.string.png_fileter;
     }
 }

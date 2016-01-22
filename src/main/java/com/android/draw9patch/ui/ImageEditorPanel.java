@@ -233,7 +233,7 @@ public class ImageEditorPanel extends JPanel {
                 new Insets(0, 6, 0, 0), 0, 0));
 
         label = new JLabel();
-        label.setText("0.5x");
+        label.setText("2x");
         label.putClientProperty("JComponent.sizeVariant", "small");
         status.add(label, new GridBagConstraints(1, 1, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
