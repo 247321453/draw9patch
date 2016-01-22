@@ -16,22 +16,24 @@
 
 package com.android.draw9patch.ui.action;
 
+import com.android.draw9patch.R;
 import com.android.draw9patch.ui.MainFrame;
 
-import javax.swing.KeyStroke;
-import java.awt.event.KeyEvent;
-import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+import javax.swing.KeyStroke;
 
 public class SaveAction extends BackgroundAction {
-    public static final String ACTION_NAME = "save";
+    public static final String ACTION_NAME = R.string.menu_save;
     private MainFrame frame;
 
     public SaveAction(MainFrame frame) {
         this.frame = frame;
-        putValue(NAME, "Save 9-patch...");
-        putValue(SHORT_DESCRIPTION, "Save...");
-        putValue(LONG_DESCRIPTION, "Save 9-patch...");
+        putValue(NAME, R.string.save);
+        putValue(SHORT_DESCRIPTION, R.string.save_short);
+        putValue(LONG_DESCRIPTION, R.string.save_long);
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));

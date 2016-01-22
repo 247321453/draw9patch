@@ -16,22 +16,24 @@
 
 package com.android.draw9patch.ui.action;
 
+import com.android.draw9patch.R;
 import com.android.draw9patch.ui.MainFrame;
 
-import javax.swing.KeyStroke;
-import java.awt.event.KeyEvent;
-import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+import javax.swing.KeyStroke;
 
 public class OpenAction extends BackgroundAction {
-    public static final String ACTION_NAME = "open";
+    public static final String ACTION_NAME = R.string.menu_open;
     private MainFrame frame;
 
     public OpenAction(MainFrame frame) {
         this.frame = frame;
-        putValue(NAME, "Open 9-patch...");
-        putValue(SHORT_DESCRIPTION, "Open...");
-        putValue(LONG_DESCRIPTION, "Open 9-patch...");
+        putValue(NAME, R.string.open);
+        putValue(SHORT_DESCRIPTION, R.string.open_short);
+        putValue(LONG_DESCRIPTION, R.string.open_long);
         putValue(MNEMONIC_KEY, KeyEvent.VK_O);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));

@@ -16,21 +16,24 @@
 
 package com.android.draw9patch.ui.action;
 
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
-import javax.swing.JFrame;
-import java.awt.event.KeyEvent;
-import java.awt.event.ActionEvent;
+import com.android.draw9patch.R;
+
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.JFrame;
+import javax.swing.KeyStroke;
 
 public class ExitAction extends AbstractAction {
-    public static final String ACTION_NAME = "exit";
+    public static final String ACTION_NAME = R.string.menu_exit;
     private JFrame frame;
 
     public ExitAction(JFrame frame) {
-        putValue(NAME, "Quit");
-        putValue(SHORT_DESCRIPTION, "Quit");
-        putValue(LONG_DESCRIPTION, "Quit");
+        putValue(NAME, R.string.exit);
+        putValue(SHORT_DESCRIPTION, R.string.exit_short);
+        putValue(LONG_DESCRIPTION, R.string.exit_long);
         putValue(MNEMONIC_KEY, KeyEvent.VK_Q);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));

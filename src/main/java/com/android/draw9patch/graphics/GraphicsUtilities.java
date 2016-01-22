@@ -16,16 +16,17 @@
 
 package com.android.draw9patch.graphics;
 
-import javax.imageio.ImageIO;
+import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
-import java.awt.Graphics;
-import java.awt.Transparency;
-import java.net.URL;
 import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 public class GraphicsUtilities {
     public static BufferedImage loadCompatibleImage(URL resource) throws IOException {
@@ -51,7 +52,7 @@ public class GraphicsUtilities {
         }
 
         BufferedImage compatibleImage = getGraphicsConfiguration().createCompatibleImage(
-                    image.getWidth(), image.getHeight(), image.getTransparency());
+                image.getWidth(), image.getHeight(), image.getTransparency());
         Graphics g = compatibleImage.getGraphics();
         g.drawImage(image, 0, 0, null);
         g.dispose();
@@ -59,9 +60,17 @@ public class GraphicsUtilities {
         return compatibleImage;
     }
 
+    public static BufferedImage zoomImage(BufferedImage image, int width, int height) {
+        BufferedImage newImage = new BufferedImage(width, height, image.getType());
+        Graphics g = newImage.getGraphics();
+        g.drawImage(image, 0, 0, width, height, null);
+        g.dispose();
+        return newImage;
+    }
+
     public static BufferedImage createCompatibleImage(BufferedImage image, int width, int height) {
         return getGraphicsConfiguration().createCompatibleImage(width, height,
-                                                   image.getTransparency());
+                image.getTransparency());
     }
 
     private static GraphicsConfiguration getGraphicsConfiguration() {

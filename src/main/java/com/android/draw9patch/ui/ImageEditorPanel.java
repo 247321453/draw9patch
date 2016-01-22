@@ -16,6 +16,7 @@
 
 package com.android.draw9patch.ui;
 
+import com.android.draw9patch.R;
 import com.android.draw9patch.graphics.GraphicsUtilities;
 
 import java.awt.BorderLayout;
@@ -54,6 +55,8 @@ public class ImageEditorPanel extends JPanel {
     private static final String EXTENSION_9PATCH = ".9.png";
     private static final Color HELP_COLOR = new Color(0xffffe1);
 
+    private static final String JC_SIZE_SMALL = "small";
+    private static final String JC_SIZEVAR = "JComponent.sizeVariant";
     private String name;
     private BufferedImage image;
     private boolean is9Patch;
@@ -80,7 +83,7 @@ public class ImageEditorPanel extends JPanel {
         is9Patch = name.endsWith(EXTENSION_9PATCH);
         if (!is9Patch) {
             this.image = convertTo9Patch(image);
-            this.name = name.substring(0, name.lastIndexOf('.')) + ".9.png";
+            this.name = name.substring(0, name.lastIndexOf('.')) + EXTENSION_9PATCH;
         } else {
             ensure9Patch(image);
         }
@@ -109,7 +112,7 @@ public class ImageEditorPanel extends JPanel {
     }
 
     private void synchronizeImageViewerZoomLevel() {
-        zoomSlider.setValue(Math.round(viewer.getZoom()*100));
+        zoomSlider.setValue(Math.round(viewer.getZoom() * 100));
     }
 
     public ImageViewer getViewer() {
@@ -134,8 +137,8 @@ public class ImageEditorPanel extends JPanel {
         viewer = new ImageViewer(this, texture, image, new ImageViewer.StatusBar() {
             @Override
             public void setPointerLocation(int x, int y) {
-                xLabel.setText(x + " px");
-                yLabel.setText(y + " px");
+                xLabel.setText(x + " " + R.string.px);
+                yLabel.setText(y + " " + R.string.px);
             }
         });
 
@@ -161,8 +164,8 @@ public class ImageEditorPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(0, 6, 0, 6));
         panel.setBackground(HELP_COLOR);
-        JLabel label = new JLabel("Press Control/Shift while dragging on the border to modify layout bounds.");
-        label.putClientProperty("JComponent.sizeVariant", "small");
+        JLabel label = new JLabel(R.string.top_tip);
+        label.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
 
         // Labels are not opaque by default, as a result, if there is not enough space,
         // the label will be painted over the button we add below. However, we still want the same
@@ -189,29 +192,30 @@ public class ImageEditorPanel extends JPanel {
         JPanel status = new JPanel(new GridBagLayout());
 
         JLabel label = new JLabel();
-        label.setText("Zoom: ");
-        label.putClientProperty("JComponent.sizeVariant", "small");
+        label.setText(R.string.zoom);
+        label.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(label, new GridBagConstraints(0, 0, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 6, 0, 0), 0, 0));
 
         label = new JLabel();
-        label.setText("25%");
-        label.putClientProperty("JComponent.sizeVariant", "small");
+        label.setText((int) (ImageViewer.MIN_ZOOM * 100) + "%");
+        label.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(label, new GridBagConstraints(1, 0, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
         zoomSlider = new JSlider(
-                Math.round(ImageViewer.MIN_ZOOM*100),
-                Math.round(ImageViewer.MAX_ZOOM*100),
-                Math.round(ImageViewer.DEFAULT_ZOOM*100)
+                Math.round(ImageViewer.MIN_ZOOM * 100),
+                Math.round(ImageViewer.MAX_ZOOM * 100),
+                Math.round(ImageViewer.DEFAULT_ZOOM * 100)
         );
-        zoomSlider.putClientProperty("JComponent.sizeVariant", "small");
+        zoomSlider.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         zoomSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent evt) {
-                viewer.setZoom(((JSlider) evt.getSource()).getValue()/100.0f);
+                float z = ((JSlider) evt.getSource()).getValue() / 100.0f;
+                viewer.setZoom(z);
             }
         });
         status.add(zoomSlider, new GridBagConstraints(2, 0, 1, 1, 0.0f, 0.0f,
@@ -219,28 +223,30 @@ public class ImageEditorPanel extends JPanel {
                 new Insets(0, 0, 0, 0), 0, 0));
 
         JLabel maxZoomLabel = new JLabel();
-        maxZoomLabel.putClientProperty("JComponent.sizeVariant", "small");
-        maxZoomLabel.setText("800%");
+        maxZoomLabel.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
+        maxZoomLabel.setText((int) (ImageViewer.MAX_ZOOM * 100) + "%");
         status.add(maxZoomLabel, new GridBagConstraints(3, 0, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
         label = new JLabel();
-        label.setText("Patch scale: ");
-        label.putClientProperty("JComponent.sizeVariant", "small");
+        label.setText(R.string.patch_zoom);
+        label.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(label, new GridBagConstraints(0, 1, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 new Insets(0, 6, 0, 0), 0, 0));
 
+        final int scale_min = 2;
+        final int scale_max = 6;
         label = new JLabel();
-        label.setText("2x");
-        label.putClientProperty("JComponent.sizeVariant", "small");
+        label.setText(scale_min + "x");
+        label.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(label, new GridBagConstraints(1, 1, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
-        JSlider jSlider = new JSlider(200, 600, (int) (StretchesViewer.DEFAULT_SCALE * 100.0f));
-        jSlider.putClientProperty("JComponent.sizeVariant", "small");
+        JSlider jSlider = new JSlider(scale_min * 100, scale_max * 100, (int) (StretchesViewer.DEFAULT_SCALE * 100.0f));
+        jSlider.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         jSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent evt) {
@@ -252,16 +258,16 @@ public class ImageEditorPanel extends JPanel {
                 new Insets(0, 0, 0, 0), 0, 0));
 
         maxZoomLabel = new JLabel();
-        maxZoomLabel.putClientProperty("JComponent.sizeVariant", "small");
-        maxZoomLabel.setText("8x");
+        maxZoomLabel.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
+        maxZoomLabel.setText(scale_max + "x");
         status.add(maxZoomLabel, new GridBagConstraints(3, 1, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
-        JCheckBox showLock = new JCheckBox("Show lock");
+        JCheckBox showLock = new JCheckBox(R.string.show_lock);
         showLock.setOpaque(false);
         showLock.setSelected(false);
-        showLock.putClientProperty("JComponent.sizeVariant", "small");
+        showLock.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         showLock.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
@@ -272,9 +278,9 @@ public class ImageEditorPanel extends JPanel {
                 GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 new Insets(0, 12, 0, 0), 0, 0));
 
-        JCheckBox showPatches = new JCheckBox("Show patches");
+        JCheckBox showPatches = new JCheckBox(R.string.show_patch);
         showPatches.setOpaque(false);
-        showPatches.putClientProperty("JComponent.sizeVariant", "small");
+        showPatches.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         showPatches.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
@@ -285,9 +291,9 @@ public class ImageEditorPanel extends JPanel {
                 GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 new Insets(0, 12, 0, 0), 0, 0));
 
-        JCheckBox showPadding = new JCheckBox("Show content");
+        JCheckBox showPadding = new JCheckBox(R.string.show_content);
         showPadding.setOpaque(false);
-        showPadding.putClientProperty("JComponent.sizeVariant", "small");
+        showPadding.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         showPadding.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
@@ -298,9 +304,9 @@ public class ImageEditorPanel extends JPanel {
                 GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 new Insets(0, 12, 0, 0), 0, 0));
 
-        JCheckBox showBadPatches = new JCheckBox("Show bad patches");
+        JCheckBox showBadPatches = new JCheckBox(R.string.show_bad_patches);
         showBadPatches.setOpaque(false);
-        showBadPatches.putClientProperty("JComponent.sizeVariant", "small");
+        showBadPatches.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         showBadPatches.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
@@ -308,33 +314,33 @@ public class ImageEditorPanel extends JPanel {
             }
         });
         status.add(showBadPatches, new GridBagConstraints(5, 1, 1, 1, 0.0f, 0.0f,
-          GridBagConstraints.LINE_START, GridBagConstraints.NONE,
-          new Insets(0, 12, 0, 0), 0, 0));
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                new Insets(0, 12, 0, 0), 0, 0));
 
         status.add(Box.createHorizontalGlue(), new GridBagConstraints(6, 0, 1, 1, 1.0f, 1.0f,
                 GridBagConstraints.LINE_START, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
 
         label = new JLabel("X: ");
-        label.putClientProperty("JComponent.sizeVariant", "small");
+        label.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(label, new GridBagConstraints(7, 0, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
         xLabel = new JLabel("0px");
-        xLabel.putClientProperty("JComponent.sizeVariant", "small");
+        xLabel.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(xLabel, new GridBagConstraints(8, 0, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 6), 0, 0));
 
         label = new JLabel("Y: ");
-        label.putClientProperty("JComponent.sizeVariant", "small");
+        label.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(label, new GridBagConstraints(7, 1, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
         yLabel = new JLabel("0px");
-        yLabel.putClientProperty("JComponent.sizeVariant", "small");
+        yLabel.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(yLabel, new GridBagConstraints(8, 1, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 6), 0, 0));

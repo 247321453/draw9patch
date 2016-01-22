@@ -16,6 +16,7 @@
 
 package com.android.draw9patch.ui;
 
+import com.android.draw9patch.R;
 import com.android.draw9patch.graphics.GraphicsUtilities;
 import com.android.draw9patch.ui.action.ExitAction;
 import com.android.draw9patch.ui.action.OpenAction;
@@ -40,10 +41,10 @@ public class MainFrame extends JFrame {
     private JMenuItem saveMenuItem;
     private ImageEditorPanel imageEditor;
 
-    private static final String TITLE_FORMAT = "Draw 9-patch: %s";
+    private static final String TITLE_FORMAT = R.string.title+": %s";
 
     public MainFrame(String path) throws HeadlessException {
-        super("Draw 9-patch");
+        super(R.string.title);
 
         buildActions();
         buildMenuBar();
@@ -75,7 +76,7 @@ public class MainFrame extends JFrame {
     }
 
     private void buildMenuBar() {
-        JMenu fileMenu = new JMenu("File");
+        JMenu fileMenu = new JMenu(R.string.menu_file);
         JMenuItem openMenuItem = new JMenuItem();
         saveMenuItem = new JMenuItem();
         JMenuItem exitMenuItem = new JMenuItem();

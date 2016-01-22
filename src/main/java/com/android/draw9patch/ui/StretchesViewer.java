@@ -64,7 +64,7 @@ public class StretchesViewer extends JPanel {
 
         image = viewer.getImage();
         patchInfo = viewer.getPatchInfo();
-        viewer.setZoom(0.5f);
+
         viewer.addPatchUpdateListener(new ImageViewer.PatchUpdateListener() {
             @Override
             public void patchesUpdated() {

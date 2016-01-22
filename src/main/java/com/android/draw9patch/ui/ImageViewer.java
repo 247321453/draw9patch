@@ -18,6 +18,8 @@
 
 package com.android.draw9patch.ui;
 
+import com.android.draw9patch.R;
+
 import java.awt.AWTEvent;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -56,10 +58,11 @@ import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
 public class ImageViewer extends JComponent {
+    private static final String PANEL_BACKGROUND = "Panel.background";
     private final Color CORRUPTED_COLOR = new Color(1.0f, 0.0f, 0.0f, 0.7f);
     private final Color LOCK_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.7f);
     private final Color STRIPES_COLOR = new Color(1.0f, 0.0f, 0.0f, 0.5f);
-    private final Color BACK_COLOR = UIManager.getColor("Panel.background").darker();
+    private final Color BACK_COLOR = UIManager.getColor(PANEL_BACKGROUND).darker();
     private final Color PATCH_COLOR = new Color(1.0f, 0.37f, 0.99f, 0.5f);
     private final Color PATCH_ONEWAY_COLOR = new Color(0.37f, 1.0f, 0.37f, 0.5f);
     private final Color HIGHLIGHT_REGION_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.5f);
@@ -608,9 +611,9 @@ public class ImageViewer extends JComponent {
 
         if (vertical != null && vertical.segment != null) {
             if (vertical.region == UpdateRegion.LEFT_PATCH) {
-                sb.append("Vertical Patch: ");
+                sb.append(R.string.v_patch);
             } else {
-                sb.append("Vertical Padding: ");
+                sb.append(R.string.v_padding);
             }
             sb.append(String.format("%d - %d px",
                     vertical.segment.first, vertical.segment.second));
@@ -621,11 +624,11 @@ public class ImageViewer extends JComponent {
                 sb.append(", ");
             }
             if (horizontal.region == UpdateRegion.TOP_PATCH) {
-                sb.append("Horizontal Patch: ");
+                sb.append(R.string.h_patch);
             } else {
-                sb.append("Horizontal Padding: ");
+                sb.append(R.string.h_padding);
             }
-            sb.append(String.format("%d - %d px",
+            sb.append(String.format("%d - %d "+R.string.px,
                     horizontal.segment.first, horizontal.segment.second));
         }
 
