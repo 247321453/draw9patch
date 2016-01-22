@@ -37,7 +37,7 @@ import javax.swing.JPanel;
 
 public class StretchesViewer extends JPanel {
     public static final float DEFAULT_SCALE = 2.0f;
-    private static final int MARGIN = 24;
+    private static final int MARGIN = 20;
 
     private final Container container;
     private final ImageViewer viewer;

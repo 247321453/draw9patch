@@ -67,7 +67,6 @@ public class ImageViewer extends JComponent {
     private final Color PATCH_ONEWAY_COLOR = new Color(0.37f, 1.0f, 0.37f, 0.5f);
     private final Color HIGHLIGHT_REGION_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     private final Color FOCUS_COLOR = Color.BLUE;
-
     private static final int PADDING = 20;
 
     private static final float STRIPES_WIDTH = 4.0f;
@@ -127,7 +126,7 @@ public class ImageViewer extends JComponent {
 
     /**
      * Indicates whether we are currently in edit mode.
-     * All fields with the prefix 'edit' are valid only when in edit mode.
+     * All fields with the prefix 'edit' are valid only when in edit mode.pa
      */
     private boolean isEditMode;
 
@@ -135,6 +134,7 @@ public class ImageViewer extends JComponent {
     private UpdateRegion editRegion;
 
     /**
+     * pain
      * The start and end points corresponding to the region being edited.
      * During an edit sequence, the start point is constant and the end varies based on the
      * mouse location.
@@ -628,7 +628,7 @@ public class ImageViewer extends JComponent {
             } else {
                 sb.append(R.string.h_padding);
             }
-            sb.append(String.format("%d - %d "+R.string.px,
+            sb.append(String.format("%d - %d " + R.string.px,
                     horizontal.segment.first, horizontal.segment.second));
         }
 
@@ -1010,7 +1010,7 @@ public class ImageViewer extends JComponent {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        g2.drawImage(image, PADDING, PADDING, null);
+        g2.drawImage(image, Math.round(PADDING / zoom), Math.round(PADDING / zoom), null);
 
         if (isFocusOwner()) {
             g2.setColor(FOCUS_COLOR);
