@@ -999,6 +999,7 @@ public class ImageViewer extends JComponent {
         int x = (getWidth() - size.width) / 2;
         int y = (getHeight() - size.height) / 2;
 
+        int zpadding = Math.round(PADDING / zoom);
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setColor(BACK_COLOR);
         g2.fillRect(0, 0, getWidth(), getHeight());
@@ -1010,7 +1011,7 @@ public class ImageViewer extends JComponent {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        g2.drawImage(image, Math.round(PADDING / zoom), Math.round(PADDING / zoom), null);
+        g2.drawImage(image, zpadding, zpadding, null);
 
         if (isFocusOwner()) {
             g2.setColor(FOCUS_COLOR);
@@ -1020,14 +1021,14 @@ public class ImageViewer extends JComponent {
         if (showPatches) {
             g2.setColor(PATCH_COLOR);
             for (Rectangle patch : patchInfo.patches) {
-                g2.fillRect(patch.x + PADDING, patch.y + PADDING, patch.width, patch.height);
+                g2.fillRect(patch.x + zpadding, patch.y + zpadding, patch.width, patch.height);
             }
             g2.setColor(PATCH_ONEWAY_COLOR);
             for (Rectangle patch : patchInfo.horizontalPatches) {
-                g2.fillRect(patch.x + PADDING, patch.y + PADDING, patch.width, patch.height);
+                g2.fillRect(patch.x + zpadding, patch.y + zpadding, patch.width, patch.height);
             }
             for (Rectangle patch : patchInfo.verticalPatches) {
-                g2.fillRect(patch.x + PADDING, patch.y + PADDING, patch.width, patch.height);
+                g2.fillRect(patch.x + zpadding, patch.y + zpadding, patch.width, patch.height);
             }
         }
 
@@ -1036,8 +1037,8 @@ public class ImageViewer extends JComponent {
             g2.setStroke(new BasicStroke(3.0f / zoom));
             for (Rectangle patch : corruptedPatches) {
                 g2.draw(new RoundRectangle2D.Float(
-                        patch.x - 2.0f / zoom + PADDING,
-                        patch.y - 2.0f / zoom + PADDING,
+                        patch.x - 2.0f / zoom + PADDING / zoom,
+                        patch.y - 2.0f / zoom + PADDING / zoom,
                         patch.width + 2.0f / zoom,
                         patch.height + 2.0f / zoom,
                         6.0f / zoom,
@@ -1050,10 +1051,10 @@ public class ImageViewer extends JComponent {
             int height = image.getHeight();
 
             g2.setColor(LOCK_COLOR);
-            g2.fillRect(1 + PADDING, 1 + PADDING, width - 2, height - 2);
+            g2.fillRect(1 + Math.round(PADDING / zoom), 1 + Math.round(PADDING / zoom), width - 2, height - 2);
 
             g2.setColor(STRIPES_COLOR);
-            g2.translate(1 + PADDING, 1 + PADDING);
+            g2.translate(1 + PADDING / zoom, 1 + PADDING / zoom);
             paintStripes(g2, width - 2, height - 2);
             g2.translate(-1, -1);
         }
