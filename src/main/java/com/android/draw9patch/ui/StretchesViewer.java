@@ -118,11 +118,13 @@ public class StretchesViewer extends JPanel {
         return viewer.getImage();
     }
 
+    private PatchInfo getPatchInfo() {
+        return viewer.getPatchInfo();
+    }
+
     void computePatches() {
         image = getImage();
-
-        patchInfo = viewer.getPatchInfo();
-
+        patchInfo = getPatchInfo();
         boolean measuredWidth = false;
         boolean endRow = true;
 

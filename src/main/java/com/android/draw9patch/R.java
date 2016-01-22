@@ -68,6 +68,10 @@ public class R {
         public static final String save = getString("save");
         public static final String save_short = getString("save_short");
         public static final String save_long = getString("save_long");
+        public static final String menu_saveas = getString("menu_saveas");
+        public static final String saveas = getString("saveas");
+        public static final String saveas_short = getString("saveas_short");
+        public static final String saveas_long = getString("saveas_long");
 
         public static final String help = getString("menuitem_help");
         public static final String about = getString("menuitem_about");

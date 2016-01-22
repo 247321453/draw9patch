@@ -21,6 +21,7 @@ import com.android.draw9patch.graphics.GraphicsUtilities;
 import com.android.draw9patch.ui.action.ExitAction;
 import com.android.draw9patch.ui.action.OpenAction;
 import com.android.draw9patch.ui.action.SaveAction;
+import com.android.draw9patch.ui.action.SaveAsAction;
 
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -42,6 +43,7 @@ import javax.swing.SwingWorker;
 public class MainFrame extends JFrame {
     private ActionMap actionsMap;
     private JMenuItem saveMenuItem;
+    private JMenuItem saveasMenuItem;
     private ImageEditorPanel imageEditor;
 
     private static final String TITLE_FORMAT = R.string.title + ": %s";
@@ -76,6 +78,7 @@ public class MainFrame extends JFrame {
         actionsMap.put(OpenAction.ACTION_NAME, new OpenAction(this));
         actionsMap.put(SaveAction.ACTION_NAME, new SaveAction(this));
         actionsMap.put(ExitAction.ACTION_NAME, new ExitAction(this));
+        actionsMap.put(SaveAsAction.ACTION_NAME, new SaveAsAction(this));
     }
 
     private void buildMenuBar() {
@@ -83,6 +86,7 @@ public class MainFrame extends JFrame {
         fileMenu.setMnemonic('F');
         JMenuItem openMenuItem = new JMenuItem();
         saveMenuItem = new JMenuItem();
+        saveasMenuItem = new JMenuItem();
         JMenuItem exitMenuItem = new JMenuItem();
 
         openMenuItem.setAction(actionsMap.get(OpenAction.ACTION_NAME));
@@ -92,6 +96,9 @@ public class MainFrame extends JFrame {
         saveMenuItem.setEnabled(false);
         fileMenu.add(saveMenuItem);
 
+        saveasMenuItem.setAction(actionsMap.get(SaveAsAction.ACTION_NAME));
+        saveasMenuItem.setEnabled(false);
+        fileMenu.add(saveasMenuItem);
         exitMenuItem.setAction(actionsMap.get(ExitAction.ACTION_NAME));
         fileMenu.add(exitMenuItem);
 
@@ -142,6 +149,7 @@ public class MainFrame extends JFrame {
         imageEditor = new ImageEditorPanel(this, image, name);
         add(imageEditor);
         saveMenuItem.setEnabled(true);
+        saveasMenuItem.setEnabled(true);
         validate();
         repaint();
     }
@@ -151,7 +159,15 @@ public class MainFrame extends JFrame {
             return null;
         }
 
-        File file = imageEditor.chooseSaveFile();
+        File file = imageEditor.chooseSaveFile(false);
+        return file != null ? new SaveTask(file) : null;
+    }
+    public SwingWorker<?, ?> saveAs() {
+        if (imageEditor == null) {
+            return null;
+        }
+
+        File file = imageEditor.chooseSaveFile(true);
         return file != null ? new SaveTask(file) : null;
     }
 

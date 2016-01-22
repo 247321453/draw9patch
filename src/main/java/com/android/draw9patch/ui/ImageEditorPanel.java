@@ -82,6 +82,7 @@ public class ImageEditorPanel extends JPanel {
 
         is9Patch = name.endsWith(EXTENSION_9PATCH);
         if (!is9Patch) {
+            is9Patch = true;
             this.image = convertTo9Patch(image);
             this.name = name.substring(0, name.lastIndexOf('.')) + EXTENSION_9PATCH;
         } else {
@@ -215,6 +216,7 @@ public class ImageEditorPanel extends JPanel {
             @Override
             public void stateChanged(ChangeEvent evt) {
                 float z = ((JSlider) evt.getSource()).getValue() / 100.0f;
+//                stretchesViewer.setZoom(z);
                 viewer.setZoom(z);
             }
         });
@@ -384,30 +386,29 @@ public class ImageEditorPanel extends JPanel {
         return buffer;
     }
 
-    File chooseSaveFile() {
-        if (is9Patch) {
+    File chooseSaveFile(boolean create) {
+        if (is9Patch && !create) {
             return new File(name);
-        } else {
-            JFileChooser chooser = new JFileChooser(
-                    name.substring(0, name.lastIndexOf(File.separatorChar)));
-            chooser.setFileFilter(new PngFileFilter());
-            int choice = chooser.showSaveDialog(this);
-            if (choice == JFileChooser.APPROVE_OPTION) {
-                File file = chooser.getSelectedFile();
-                if (!file.getAbsolutePath().endsWith(EXTENSION_9PATCH)) {
-                    String path = file.getAbsolutePath();
-                    if (path.endsWith(".png")) {
-                        path = path.substring(0, path.lastIndexOf(".png")) + EXTENSION_9PATCH;
-                    } else {
-                        path = path + EXTENSION_9PATCH;
-                    }
-                    name = path;
-                    is9Patch = true;
-                    return new File(path);
+        }
+        JFileChooser chooser = new JFileChooser(
+                name.substring(0, name.lastIndexOf(File.separatorChar)));
+        chooser.setFileFilter(new PngFileFilter());
+        int choice = chooser.showSaveDialog(this);
+        if (choice == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            if (!file.getAbsolutePath().endsWith(EXTENSION_9PATCH)) {
+                String path = file.getAbsolutePath();
+                if (path.endsWith(".png")) {
+                    path = path.substring(0, path.lastIndexOf(".png")) + EXTENSION_9PATCH;
+                } else {
+                    path = path + EXTENSION_9PATCH;
                 }
+                name = path;
                 is9Patch = true;
-                return file;
+                return new File(path);
             }
+            is9Patch = true;
+            return file;
         }
         return null;
     }
