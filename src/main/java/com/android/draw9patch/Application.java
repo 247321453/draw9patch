@@ -40,7 +40,7 @@ public class Application {
         }
     }
 
-    public static void main(final String... args) {
+    public static void main(final String[] args) {
         initUserInterface();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
