@@ -65,6 +65,8 @@ public class ImageViewer extends JComponent {
     private final Color HIGHLIGHT_REGION_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     private final Color FOCUS_COLOR = Color.BLUE;
 
+    private static final int PADDING = 20;
+
     private static final float STRIPES_WIDTH = 4.0f;
     private static final double STRIPES_SPACING = 6.0;
     private static final int STRIPES_ANGLE = 45;
@@ -73,18 +75,18 @@ public class ImageViewer extends JComponent {
     private static final float IDEAL_IMAGE_FRACTION_OF_WINDOW = 0.7f;
 
     /** Default zoom level for the 9patch image. */
-    public static final int DEFAULT_ZOOM = 8;
+    public static final float DEFAULT_ZOOM = 8.0f;
 
     /** Minimum zoom level for the 9patch image. */
-    public static final int MIN_ZOOM = 1;
+    public static final float MIN_ZOOM = 0.25f;
 
     /** Maximum zoom level for the 9patch image. */
-    public static final int MAX_ZOOM = 16;
+    public static final float MAX_ZOOM = 16.0f;
 
     private final AWTEventListener mAwtKeyEventListener;
 
     /** Current 9patch zoom level, {@link #MIN_ZOOM} <= zoom <= {@link #MAX_ZOOM} */
-    private int zoom = DEFAULT_ZOOM;
+    private float zoom = DEFAULT_ZOOM;
     private boolean showPatches;
     private boolean showLock = false;
 
@@ -168,6 +170,7 @@ public class ImageViewer extends JComponent {
         setLayout(new GridBagLayout());
         setOpaque(true);
         setFocusable(true);
+
         // Exact size will be set by setZoom() in AncestorListener#ancestorMoved.
         size = new Dimension(0, 0);
 
@@ -455,8 +458,8 @@ public class ImageViewer extends JComponent {
             boolean verticalPatch = editRegion == UpdateRegion.LEFT_PATCH
                     || editRegion == UpdateRegion.RIGHT_PADDING;
 
-            x = clamp(x, 1, image.getWidth() - 1);
-            y = clamp(y, 1, image.getHeight() - 1);
+            x = clampInt(x, 1, image.getWidth() - 1);
+            y = clampInt(y, 1, image.getHeight() - 1);
 
             editSegment.first = editSegment.second = verticalPatch ? y : x;
         }
@@ -473,8 +476,8 @@ public class ImageViewer extends JComponent {
             return;
         }
 
-        x = clamp(x, 1, image.getWidth() - 1);
-        y = clamp(y, 1, image.getHeight() - 1);
+        x = clampInt(x, 1, image.getWidth() - 1);
+        y = clampInt(y, 1, image.getHeight() - 1);
 
         switch (editRegion) {
             case LEFT_PATCH:
@@ -505,8 +508,8 @@ public class ImageViewer extends JComponent {
             return;
         }
 
-        x = clamp(x, 1, image.getWidth() - 1);
-        y = clamp(y, 1, image.getHeight() - 1);
+        x = clampInt(x, 1, image.getWidth() - 1);
+        y = clampInt(y, 1, image.getHeight() - 1);
 
         switch (editRegion) {
             case LEFT_PATCH:
@@ -523,7 +526,19 @@ public class ImageViewer extends JComponent {
         repaint();
     }
 
-    private int clamp(int i, int min, int max) {
+    private int clampInt(int i, int min, int max) {
+        if (i < min) {
+            return min;
+        }
+
+        if (i > max) {
+            return max;
+        }
+
+        return i;
+    }
+
+    private float clamp(float i, float min, float max) {
         if (i < min) {
             return min;
         }
@@ -750,13 +765,13 @@ public class ImageViewer extends JComponent {
     }
 
     private int imageYCoordinate(int y) {
-        int top = (getHeight() - size.height) / 2;
-        return (y - top) / zoom;
+        float top = (getHeight() - size.height) / 2.0f;
+        return Math.round((y - top) / zoom);
     }
 
     private int imageXCoordinate(int x) {
-        int left = (getWidth() - size.width) / 2;
-        return (x - left) / zoom;
+        float left = (getWidth() - size.width) / 2.0f;
+        return Math.round((x - left) / zoom);
     }
 
     private Point getImageOrigin() {
@@ -768,10 +783,10 @@ public class ImageViewer extends JComponent {
     private Rectangle displayCoordinates(Rectangle r) {
         Point imageOrigin = getImageOrigin();
 
-        int x = r.x * zoom + imageOrigin.x;
-        int y = r.y * zoom + imageOrigin.y;
-        int w = r.width * zoom;
-        int h = r.height * zoom;
+        int x = Math.round(r.x * zoom + imageOrigin.x);
+        int y = Math.round(r.y * zoom + imageOrigin.y);
+        int w = Math.round(r.width * zoom);
+        int h = Math.round(r.height * zoom);
 
         return new Rectangle(x, y, w, h);
     }
@@ -952,10 +967,19 @@ public class ImageViewer extends JComponent {
         if (locked != previousLock) {
             repaint();
         } else if (showCursor || (showCursor != previousCursor)) {
-            Rectangle clip = new Rectangle(lastPositionX - 1 - zoom / 2,
-                    lastPositionY - 1 - zoom / 2, zoom + 2, zoom + 2);
-            clip = clip.union(new Rectangle(oldX - 1 - zoom / 2,
-                    oldY - 1 - zoom / 2, zoom + 2, zoom + 2));
+            Rectangle clip = new Rectangle(
+                    Math.round(lastPositionX - 1 - zoom / 2.0f),
+                    Math.round(lastPositionY - 1 - zoom / 2.0f),
+                    Math.round(zoom + 2),
+                    Math.round(zoom + 2)
+            );
+            clip = clip.union(new Rectangle(
+                    Math.round(oldX - 1 - zoom / 2.0f),
+                    Math.round(oldY - 1 - zoom / 2.0f),
+                    Math.round(zoom + 2),
+                    Math.round(zoom + 2)
+            ))
+            ;
             repaint(clip);
         }
 
@@ -970,7 +994,6 @@ public class ImageViewer extends JComponent {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setColor(BACK_COLOR);
         g2.fillRect(0, 0, getWidth(), getHeight());
-
         g2.translate(x, y);
         g2.setPaint(texture);
         g2.fillRect(0, 0, size.width, size.height);
@@ -979,24 +1002,24 @@ public class ImageViewer extends JComponent {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        g2.drawImage(image, 0, 0, null);
+        g2.drawImage(image, PADDING, PADDING, null);
 
         if (isFocusOwner()) {
             g2.setColor(FOCUS_COLOR);
-            g2.drawRect(focusX, focusY, 1, 1);
+            g2.drawRect(focusX + PADDING, focusY + PADDING, 1, 1);
         }
 
         if (showPatches) {
             g2.setColor(PATCH_COLOR);
             for (Rectangle patch : patchInfo.patches) {
-                g2.fillRect(patch.x, patch.y, patch.width, patch.height);
+                g2.fillRect(patch.x + PADDING, patch.y + PADDING, patch.width, patch.height);
             }
             g2.setColor(PATCH_ONEWAY_COLOR);
             for (Rectangle patch : patchInfo.horizontalPatches) {
-                g2.fillRect(patch.x, patch.y, patch.width, patch.height);
+                g2.fillRect(patch.x + PADDING, patch.y + PADDING, patch.width, patch.height);
             }
             for (Rectangle patch : patchInfo.verticalPatches) {
-                g2.fillRect(patch.x, patch.y, patch.width, patch.height);
+                g2.fillRect(patch.x + PADDING, patch.y + PADDING, patch.width, patch.height);
             }
         }
 
@@ -1004,9 +1027,13 @@ public class ImageViewer extends JComponent {
             g2.setColor(CORRUPTED_COLOR);
             g2.setStroke(new BasicStroke(3.0f / zoom));
             for (Rectangle patch : corruptedPatches) {
-                g2.draw(new RoundRectangle2D.Float(patch.x - 2.0f / zoom, patch.y - 2.0f / zoom,
-                        patch.width + 2.0f / zoom, patch.height + 2.0f / zoom,
-                        6.0f / zoom, 6.0f / zoom));
+                g2.draw(new RoundRectangle2D.Float(
+                        patch.x - 2.0f / zoom + PADDING,
+                        patch.y - 2.0f / zoom + PADDING,
+                        patch.width + 2.0f / zoom,
+                        patch.height + 2.0f / zoom,
+                        6.0f / zoom,
+                        6.0f / zoom));
             }
         }
 
@@ -1015,10 +1042,10 @@ public class ImageViewer extends JComponent {
             int height = image.getHeight();
 
             g2.setColor(LOCK_COLOR);
-            g2.fillRect(1, 1, width - 2, height - 2);
+            g2.fillRect(1 + PADDING, 1 + PADDING, width - 2, height - 2);
 
             g2.setColor(STRIPES_COLOR);
-            g2.translate(1, 1);
+            g2.translate(1 + PADDING, 1 + PADDING);
             paintStripes(g2, width - 2, height - 2);
             g2.translate(-1, -1);
         }
@@ -1035,10 +1062,10 @@ public class ImageViewer extends JComponent {
             int w = Math.abs(lineFromX - lineToX) + 1;
             int h = Math.abs(lineFromY - lineToY) + 1;
 
-            x = x * zoom;
-            y = y * zoom;
-            w = w * zoom;
-            h = h * zoom;
+            x = Math.round(x * zoom);
+            y = Math.round(y * zoom);
+            w = Math.round(w * zoom);
+            h = Math.round(h * zoom);
 
             int left = (getWidth() - size.width) / 2;
             int top = (getHeight() - size.height) / 2;
@@ -1046,7 +1073,7 @@ public class ImageViewer extends JComponent {
             x += left;
             y += top;
 
-            cursor.drawRect(x, y, w, h);
+            cursor.drawRect(x + PADDING, y + PADDING, w, h);
             cursor.dispose();
         }
 
@@ -1054,14 +1081,18 @@ public class ImageViewer extends JComponent {
             Graphics cursor = g.create();
             cursor.setXORMode(Color.WHITE);
             cursor.setColor(Color.BLACK);
-            cursor.drawRect(lastPositionX - zoom / 2, lastPositionY - zoom / 2, zoom, zoom);
+            cursor.drawRect(
+                    Math.round(lastPositionX - zoom / 2.0f) + PADDING,
+                    Math.round(lastPositionY - zoom / 2.0f) + PADDING,
+                    Math.round(zoom),
+                    Math.round(zoom));
             cursor.dispose();
         }
 
         g2 = (Graphics2D) g.create();
         g2.setColor(HIGHLIGHT_REGION_COLOR);
         for (Rectangle r : hoverHighlightRegions) {
-            g2.fillRect(r.x, r.y, r.width, r.height);
+            g2.fillRect(r.x + PADDING, r.y + PADDING, r.width, r.height);
         }
 
         if (!hoverHighlightRegions.isEmpty()) {
@@ -1073,13 +1104,12 @@ public class ImageViewer extends JComponent {
         if (isEditMode && editRegion != null) {
             g2.setColor(HIGHLIGHT_REGION_COLOR);
             for (Rectangle r : editHighlightRegions) {
-                g2.fillRect(r.x, r.y, r.width, r.height);
+                g2.fillRect(r.x + PADDING, r.y + PADDING, r.width, r.height);
             }
             g2.setColor(Color.BLACK);
-            g2.fillRect(editPatchRegion.x, editPatchRegion.y,
+            g2.fillRect(editPatchRegion.x + PADDING, editPatchRegion.y + PADDING,
                     editPatchRegion.width, editPatchRegion.height);
         }
-
         g2.dispose();
     }
 
@@ -1121,7 +1151,7 @@ public class ImageViewer extends JComponent {
 
     private void setDefaultZoom() {
         int frameWidth = getWidth(), frameHeight = getHeight();
-        int z = DEFAULT_ZOOM;
+        float z = DEFAULT_ZOOM;
         if (frameWidth > 0 && frameHeight > 0) {
             float w = (float) image.getWidth() / frameWidth;
             float h = (float) image.getHeight() / frameHeight;
@@ -1134,7 +1164,7 @@ public class ImageViewer extends JComponent {
         setZoom(z);
     }
 
-    void setZoom(int value) {
+    void setZoom(float value) {
         zoom = value;
         updateSize();
         if (!size.equals(getSize())) {
@@ -1144,7 +1174,7 @@ public class ImageViewer extends JComponent {
         }
     }
 
-    int getZoom() {
+    float getZoom() {
         return zoom;
     }
 
@@ -1153,9 +1183,9 @@ public class ImageViewer extends JComponent {
         int height = image.getHeight();
 
         if (size.height == 0 || (getHeight() - size.height) == 0) {
-            size.setSize(width * zoom, height * zoom);
+            size.setSize(width * zoom + PADDING * 2, height * zoom + PADDING * 2);
         } else {
-            size.setSize(width * zoom, height * zoom);
+            size.setSize(width * zoom + PADDING * 2, height * zoom + PADDING * 2);
         }
     }
 

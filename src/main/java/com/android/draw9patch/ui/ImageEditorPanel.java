@@ -57,7 +57,6 @@ public class ImageEditorPanel extends JPanel {
     private String name;
     private BufferedImage image;
     private boolean is9Patch;
-
     private ImageViewer viewer;
     private StretchesViewer stretchesViewer;
     private JLabel xLabel;
@@ -75,7 +74,8 @@ public class ImageEditorPanel extends JPanel {
         }
 
         setOpaque(false);
-        setLayout(new BorderLayout());
+        BorderLayout borderLayout = new BorderLayout();
+        setLayout(borderLayout);
 
         is9Patch = name.endsWith(EXTENSION_9PATCH);
         if (!is9Patch) {
@@ -109,7 +109,7 @@ public class ImageEditorPanel extends JPanel {
     }
 
     private void synchronizeImageViewerZoomLevel() {
-        zoomSlider.setValue(viewer.getZoom());
+        zoomSlider.setValue(Math.round(viewer.getZoom()*100));
     }
 
     public ImageViewer getViewer() {
@@ -202,13 +202,16 @@ public class ImageEditorPanel extends JPanel {
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
-        zoomSlider = new JSlider(ImageViewer.MIN_ZOOM, ImageViewer.MAX_ZOOM,
-                ImageViewer.DEFAULT_ZOOM);
+        zoomSlider = new JSlider(
+                Math.round(ImageViewer.MIN_ZOOM*100),
+                Math.round(ImageViewer.MAX_ZOOM*100),
+                Math.round(ImageViewer.DEFAULT_ZOOM*100)
+        );
         zoomSlider.putClientProperty("JComponent.sizeVariant", "small");
         zoomSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent evt) {
-                viewer.setZoom(((JSlider) evt.getSource()).getValue());
+                viewer.setZoom(((JSlider) evt.getSource()).getValue()/100.0f);
             }
         });
         status.add(zoomSlider, new GridBagConstraints(2, 0, 1, 1, 0.0f, 0.0f,
@@ -250,7 +253,7 @@ public class ImageEditorPanel extends JPanel {
 
         maxZoomLabel = new JLabel();
         maxZoomLabel.putClientProperty("JComponent.sizeVariant", "small");
-        maxZoomLabel.setText("6x");
+        maxZoomLabel.setText("8x");
         status.add(maxZoomLabel, new GridBagConstraints(3, 1, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
