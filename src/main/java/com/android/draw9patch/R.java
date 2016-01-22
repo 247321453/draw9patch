@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
  * Created by Administrator on 2016/1/22.
  */
 public class R {
-    private static final String BUNDLE_NAME = "com.android.draw9patch.string";
+    private static final String BUNDLE_NAME = "values.string";
 
     private static final ResourceBundle RESOURCE_BUNDLE;
 
