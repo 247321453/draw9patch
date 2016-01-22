@@ -168,7 +168,6 @@ public class ImageViewer extends JComponent {
         setLayout(new GridBagLayout());
         setOpaque(true);
         setFocusable(true);
-
         // Exact size will be set by setZoom() in AncestorListener#ancestorMoved.
         size = new Dimension(0, 0);
 
@@ -176,11 +175,13 @@ public class ImageViewer extends JComponent {
             @Override
             public void ancestorRemoved(AncestorEvent event) {
             }
+
             @Override
             public void ancestorMoved(AncestorEvent event) {
                 removeAncestorListener(this);
                 setDefaultZoom();
             }
+
             @Override
             public void ancestorAdded(AncestorEvent event) {
             }
@@ -384,7 +385,7 @@ public class ImageViewer extends JComponent {
 
     private UpdateRegionInfo getContainingPatch(List<Pair<Integer>> patches, int a,
                                                 UpdateRegion region) {
-        for (Pair<Integer> p: patches) {
+        for (Pair<Integer> p : patches) {
             if (p.first <= a && p.second > a) {
                 return new UpdateRegionInfo(region, p);
             }
@@ -737,6 +738,7 @@ public class ImageViewer extends JComponent {
     }
 
     private static final int EDGE_DELTA = 1;
+
     private Edge getClosestEdge(int x, Pair<Integer> range) {
         if (Math.abs(x - range.first) <= EDGE_DELTA) {
             return Edge.START;
@@ -856,6 +858,7 @@ public class ImageViewer extends JComponent {
 
     /**
      * Set the color of pixels on the line from (x1, y1) to (x2, y2) to given color.
+     *
      * @param inclusive indicates whether the range is inclusive. If true, the last pixel (x2, y2)
      *                  will be set to the given color as well.
      */
@@ -943,8 +946,8 @@ public class ImageViewer extends JComponent {
         boolean previousCursor = showCursor;
         showCursor =
                 !drawingLine &&
-                        ( ((x == 0 || x == width - 1) && (y > 0 && y < height - 1)) ||
-                                ((x > 0 && x < width - 1) && (y == 0 || y == height - 1)) );
+                        (((x == 0 || x == width - 1) && (y > 0 && y < height - 1)) ||
+                                ((x > 0 && x < width - 1) && (y == 0 || y == height - 1)));
 
         if (locked != previousLock) {
             repaint();
@@ -975,7 +978,7 @@ public class ImageViewer extends JComponent {
         g2.scale(zoom, zoom);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-          RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+                RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         g2.drawImage(image, 0, 0, null);
 
         if (isFocusOwner()) {
@@ -1057,7 +1060,7 @@ public class ImageViewer extends JComponent {
 
         g2 = (Graphics2D) g.create();
         g2.setColor(HIGHLIGHT_REGION_COLOR);
-        for (Rectangle r: hoverHighlightRegions) {
+        for (Rectangle r : hoverHighlightRegions) {
             g2.fillRect(r.x, r.y, r.width, r.height);
         }
 
@@ -1069,7 +1072,7 @@ public class ImageViewer extends JComponent {
 
         if (isEditMode && editRegion != null) {
             g2.setColor(HIGHLIGHT_REGION_COLOR);
-            for (Rectangle r: editHighlightRegions) {
+            for (Rectangle r : editHighlightRegions) {
                 g2.fillRect(r.x, r.y, r.width, r.height);
             }
             g2.setColor(Color.BLACK);
@@ -1085,10 +1088,10 @@ public class ImageViewer extends JComponent {
         //and at the given distance apart
         Shape oldClip = g.getClip();
         Area area = new Area(new Rectangle(0, 0, width, height));
-        if(oldClip != null) {
+        if (oldClip != null) {
             area = new Area(oldClip);
         }
-        area.intersect(new Area(new Rectangle(0,0,width,height)));
+        area.intersect(new Area(new Rectangle(0, 0, width, height)));
         g.setClip(area);
 
         g.setStroke(new BasicStroke(STRIPES_WIDTH));
@@ -1101,9 +1104,9 @@ public class ImageViewer extends JComponent {
 
         double spacing = STRIPES_SPACING;
         spacing += STRIPES_WIDTH;
-        int numLines = (int)(hypLength / spacing);
+        int numLines = (int) (hypLength / spacing);
 
-        for (int i=0; i<numLines; i++) {
+        for (int i = 0; i < numLines; i++) {
             double x = i * spacing;
             Line2D line = new Line2D.Double(x, -hypLength, x, hypLength);
             g.draw(line);
@@ -1198,7 +1201,7 @@ public class ImageViewer extends JComponent {
     }
 
     private void notifyPatchesUpdated() {
-        for (PatchUpdateListener p: listeners) {
+        for (PatchUpdateListener p : listeners) {
             p.patchesUpdated();
         }
     }
