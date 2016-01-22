@@ -60,7 +60,13 @@ public class GraphicsUtilities {
         return compatibleImage;
     }
 
+    public static BufferedImage zoomImage(BufferedImage image, float zoom) {
+        if (image == null) return null;
+        return zoomImage(image, Math.round(image.getWidth() * zoom), Math.round(image.getHeight() * zoom));
+    }
+
     public static BufferedImage zoomImage(BufferedImage image, int width, int height) {
+        if (image == null) return null;
         BufferedImage newImage = new BufferedImage(width, height, image.getType());
         Graphics g = newImage.getGraphics();
         g.drawImage(image, 0, 0, width, height, null);

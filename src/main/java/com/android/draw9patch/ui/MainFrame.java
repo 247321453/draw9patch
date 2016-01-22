@@ -23,6 +23,8 @@ import com.android.draw9patch.ui.action.OpenAction;
 import com.android.draw9patch.ui.action.SaveAction;
 
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
@@ -34,6 +36,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 public class MainFrame extends JFrame {
@@ -41,7 +44,7 @@ public class MainFrame extends JFrame {
     private JMenuItem saveMenuItem;
     private ImageEditorPanel imageEditor;
 
-    private static final String TITLE_FORMAT = R.string.title+": %s";
+    private static final String TITLE_FORMAT = R.string.title + ": %s";
 
     public MainFrame(String path) throws HeadlessException {
         super(R.string.title);
@@ -77,6 +80,7 @@ public class MainFrame extends JFrame {
 
     private void buildMenuBar() {
         JMenu fileMenu = new JMenu(R.string.menu_file);
+        fileMenu.setMnemonic('F');
         JMenuItem openMenuItem = new JMenuItem();
         saveMenuItem = new JMenuItem();
         JMenuItem exitMenuItem = new JMenuItem();
@@ -93,6 +97,17 @@ public class MainFrame extends JFrame {
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);
+
+        JMenu helpMenu = new JMenu(R.string.help);
+        JMenuItem aboutItem = new JMenuItem(R.string.about);
+        aboutItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(getContentPane(), R.string.about_text);
+            }
+        });
+        helpMenu.add(aboutItem);
+        menuBar.add(helpMenu);
         setJMenuBar(menuBar);
     }
 

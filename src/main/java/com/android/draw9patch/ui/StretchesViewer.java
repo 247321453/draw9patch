@@ -18,6 +18,8 @@
 
 package com.android.draw9patch.ui;
 
+import com.android.draw9patch.graphics.GraphicsUtilities;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -115,7 +117,9 @@ public class StretchesViewer extends JPanel {
     }
 
     void computePatches() {
-        image = viewer.getImage();
+        image = GraphicsUtilities.zoomImage(viewer.getImage(), viewer.getImage().getWidth() / 2,
+                viewer.getImage().getHeight() / 2);
+
         patchInfo = viewer.getPatchInfo();
 
         boolean measuredWidth = false;

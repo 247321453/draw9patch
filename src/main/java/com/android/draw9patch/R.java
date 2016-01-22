@@ -68,5 +68,9 @@ public class R {
         public static final String save = getString("save");
         public static final String save_short = getString("save_short");
         public static final String save_long = getString("save_long");
+
+        public static final String help = getString("menuitem_help");
+        public static final String about = getString("menuitem_about");
+        public static final String about_text = getString("about_text");
     }
 }
