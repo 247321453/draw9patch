@@ -59,16 +59,15 @@ import javax.swing.event.AncestorListener;
 
 public class ImageViewer extends JComponent {
     private static final String PANEL_BACKGROUND = "Panel.background";
-    private final Color CORRUPTED_COLOR = new Color(1.0f, 0.0f, 0.0f, 0.7f);
-    private final Color LOCK_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.7f);
-    private final Color STRIPES_COLOR = new Color(1.0f, 0.0f, 0.0f, 0.5f);
-    private final Color BACK_COLOR = UIManager.getColor(PANEL_BACKGROUND).darker();
-    private final Color PATCH_COLOR = new Color(1.0f, 0.37f, 0.99f, 0.5f);
-    private final Color PATCH_ONEWAY_COLOR = new Color(0.37f, 1.0f, 0.37f, 0.5f);
-    private final Color HIGHLIGHT_REGION_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-    private final Color FOCUS_COLOR = Color.BLUE;
-    private static final int PADDING = 20;
-
+    private static final Color CORRUPTED_COLOR = new Color(1.0f, 0.0f, 0.0f, 0.7f);
+    private static final Color LOCK_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.7f);
+    private static final Color STRIPES_COLOR = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+    private static final Color BACK_COLOR = UIManager.getColor(PANEL_BACKGROUND).darker();
+    private static final Color PATCH_COLOR = new Color(1.0f, 0.37f, 0.99f, 0.5f);
+    private static final Color PATCH_ONEWAY_COLOR = new Color(0.37f, 1.0f, 0.37f, 0.5f);
+    private static final Color HIGHLIGHT_REGION_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+    private static final Color FOCUS_COLOR = Color.BLUE;
+    private static final int PADDING = 0;
     private static final float STRIPES_WIDTH = 4.0f;
     private static final double STRIPES_SPACING = 6.0;
     private static final int STRIPES_ANGLE = 45;
@@ -157,10 +156,6 @@ public class ImageViewer extends JComponent {
         ERASE,          // erasing whatever has been drawn
     }
 
-    private int getPadding() {
-        return Math.round(PADDING * zoom);
-    }
-
     /**
      * Current drawing mode. The mode is changed by using either the Shift or Ctrl keys while
      * drawing.
@@ -209,7 +204,6 @@ public class ImageViewer extends JComponent {
                 // changed state).
 
                 updateDrawMode(event);
-
                 int x = imageXCoordinate(event.getX() - PADDING);
                 int y = imageYCoordinate(event.getY() - PADDING);
 
@@ -1037,8 +1031,8 @@ public class ImageViewer extends JComponent {
             g2.setStroke(new BasicStroke(3.0f / zoom));
             for (Rectangle patch : corruptedPatches) {
                 g2.draw(new RoundRectangle2D.Float(
-                        patch.x - 2.0f / zoom + PADDING / zoom,
-                        patch.y - 2.0f / zoom + PADDING / zoom,
+                        patch.x - 2.0f / zoom + zpadding,
+                        patch.y - 2.0f / zoom + zpadding,
                         patch.width + 2.0f / zoom,
                         patch.height + 2.0f / zoom,
                         6.0f / zoom,
@@ -1051,10 +1045,10 @@ public class ImageViewer extends JComponent {
             int height = image.getHeight();
 
             g2.setColor(LOCK_COLOR);
-            g2.fillRect(1 + Math.round(PADDING / zoom), 1 + Math.round(PADDING / zoom), width - 2, height - 2);
+            g2.fillRect(1 + zpadding, 1 + zpadding, width - 2, height - 2);
 
             g2.setColor(STRIPES_COLOR);
-            g2.translate(1 + PADDING / zoom, 1 + PADDING / zoom);
+            g2.translate(1 + zpadding, 1 + zpadding);
             paintStripes(g2, width - 2, height - 2);
             g2.translate(-1, -1);
         }
@@ -1076,13 +1070,13 @@ public class ImageViewer extends JComponent {
             w = Math.round(w * zoom);
             h = Math.round(h * zoom);
 
-            int left = (getWidth() - size.width) / 2;
-            int top = (getHeight() - size.height) / 2;
+            int left = (getWidth() - size.width) / 2 + PADDING;
+            int top = (getHeight() - size.height) / 2 + PADDING;
 
             x += left;
             y += top;
 
-            cursor.drawRect(x + PADDING, y + PADDING, w, h);
+            cursor.drawRect(x, y, w, h);
             cursor.dispose();
         }
 
@@ -1110,6 +1104,7 @@ public class ImageViewer extends JComponent {
             setToolTipText(null);
         }
 
+        //TODO:
         if (isEditMode && editRegion != null) {
             g2.setColor(HIGHLIGHT_REGION_COLOR);
             for (Rectangle r : editHighlightRegions) {
@@ -1190,7 +1185,6 @@ public class ImageViewer extends JComponent {
     private void updateSize() {
         int width = image.getWidth();
         int height = image.getHeight();
-
         if (size.height == 0 || (getHeight() - size.height) == 0) {
             size.setSize(width * zoom + PADDING * 2, height * zoom + PADDING * 2);
         } else {
@@ -1207,10 +1201,6 @@ public class ImageViewer extends JComponent {
     void setLockVisible(boolean visible) {
         showLock = visible;
         repaint();
-    }
-
-    public void setImage(BufferedImage image) {
-        this.image = image;
     }
 
     public BufferedImage getImage() {
