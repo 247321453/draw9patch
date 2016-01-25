@@ -82,7 +82,6 @@ public class ImageEditorPanel extends JPanel {
 
         is9Patch = name.endsWith(EXTENSION_9PATCH);
         if (!is9Patch) {
-            is9Patch = true;
             this.image = convertTo9Patch(image);
             this.name = name.substring(0, name.lastIndexOf('.')) + EXTENSION_9PATCH;
         } else {
@@ -113,7 +112,7 @@ public class ImageEditorPanel extends JPanel {
     }
 
     private void synchronizeImageViewerZoomLevel() {
-        zoomSlider.setValue(Math.round(viewer.getZoom() * 100));
+        zoomSlider.setValue(viewer.getZoomValue());
     }
 
     public ImageViewer getViewer() {
@@ -133,7 +132,7 @@ public class ImageEditorPanel extends JPanel {
 
     private void buildImageViewer() {
         JPanel panel = new JPanel(new BorderLayout());
-     //   panel.add(createHelpPanel(), BorderLayout.NORTH);
+        //   panel.add(createHelpPanel(), BorderLayout.NORTH);
 
         viewer = new ImageViewer(this, texture, image, new ImageViewer.StatusBar() {
             @Override
@@ -207,17 +206,16 @@ public class ImageEditorPanel extends JPanel {
                 new Insets(0, 0, 0, 0), 0, 0));
 
         zoomSlider = new JSlider(
-                Math.round(ImageViewer.MIN_ZOOM * 100),
-                Math.round(ImageViewer.MAX_ZOOM * 100),
-                Math.round(ImageViewer.DEFAULT_ZOOM * 100)
+                ImageViewer.getMinZoomValue(),
+                ImageViewer.getMaxZoomValue(),
+                ImageViewer.getDefaultZoomValue()
         );
         zoomSlider.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         zoomSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent evt) {
-                float z = ((JSlider) evt.getSource()).getValue() / 100.0f;
-//                stretchesViewer.setZoom(z);
-                viewer.setZoom(z);
+                int a = ((JSlider) evt.getSource()).getValue();
+                viewer.setZoomValue(a);
             }
         });
         status.add(zoomSlider, new GridBagConstraints(2, 0, 1, 1, 0.0f, 0.0f,
@@ -329,7 +327,7 @@ public class ImageEditorPanel extends JPanel {
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
-        xLabel = new JLabel("0"+R.string.px);
+        xLabel = new JLabel("0" + R.string.px);
         xLabel.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(xLabel, new GridBagConstraints(8, 0, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
@@ -341,7 +339,7 @@ public class ImageEditorPanel extends JPanel {
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
-        yLabel = new JLabel("0"+R.string.px);
+        yLabel = new JLabel("0" + R.string.px);
         yLabel.putClientProperty(JC_SIZEVAR, JC_SIZE_SMALL);
         status.add(yLabel, new GridBagConstraints(8, 1, 1, 1, 0.0f, 0.0f,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
@@ -387,7 +385,7 @@ public class ImageEditorPanel extends JPanel {
     }
 
     File chooseSaveFile(boolean create) {
-        if (is9Patch && !create) {
+        if (!create) {
             return new File(name);
         }
         JFileChooser chooser = new JFileChooser(

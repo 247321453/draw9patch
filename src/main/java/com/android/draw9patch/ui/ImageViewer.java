@@ -76,13 +76,13 @@ public class ImageViewer extends JComponent {
     private static final float IDEAL_IMAGE_FRACTION_OF_WINDOW = 0.7f;
 
     /** Default zoom level for the 9patch image. */
-    public static final float DEFAULT_ZOOM = 8.0f;
+    public static final float DEFAULT_ZOOM = 1.0f;
 
     /** Minimum zoom level for the 9patch image. */
     public static final float MIN_ZOOM = 0.50f;
 
     /** Maximum zoom level for the 9patch image. */
-    public static final float MAX_ZOOM = 10.0f;
+    public static final float MAX_ZOOM = 8.0f;
 
     private final AWTEventListener mAwtKeyEventListener;
 
@@ -1180,6 +1180,24 @@ public class ImageViewer extends JComponent {
 
     float getZoom() {
         return zoom;
+    }
+
+    int getZoomValue() {
+        return Math.round(zoom * 100) / 25;
+    }
+
+    public static int getMaxZoomValue() {
+        return Math.round(ImageViewer.MAX_ZOOM * 100) / 25;
+    }
+
+    public static int getMinZoomValue() {
+        return Math.round(ImageViewer.MIN_ZOOM * 100) / 25;
+    }
+    public static int getDefaultZoomValue() {
+        return Math.round(ImageViewer.DEFAULT_ZOOM * 100) / 25;
+    }
+    void setZoomValue(int value) {
+        setZoom(value * 25 / 100.0f);
     }
 
     private void updateSize() {
