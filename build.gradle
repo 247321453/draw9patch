@@ -5,11 +5,9 @@ repositories {
 apply plugin: 'java'
 
 dependencies {
-    testCompile 'junit:junit:4.12'
 }
 sourceSets {
     main.resources.srcDir 'src/main/java'
-    test.resources.srcDir 'src/test/java'
 }
 
 jar {
